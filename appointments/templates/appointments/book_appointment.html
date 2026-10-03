@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Appointment - AyuSetu{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4 p-md-5">
+
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold">Book Appointment</h2>
+
+                            <p class="text-muted mb-1">
+                                Dr.
+                                {{ doctor.user.get_full_name|default:doctor.user.username }}
+                            </p>
+
+                            <p class="text-muted">
+                                {{ doctor.specialization.name }}
+                            </p>
+                        </div>
+
+                        <div class="alert alert-light border mb-4">
+                            <div class="row text-center">
+
+                                <div class="col-md-6">
+                                    <strong>Qualification</strong>
+                                    <br>
+                                    {{ doctor.qualification }}
+                                </div>
+
+                                
+
+                            </div>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <form method="post">
+
+                            {% csrf_token %}
+
+                            <div class="mb-4">
+
+                                <label class="form-label fw-semibold">
+                                    Select Appointment Date
+                                </label>
+
+                                <input
+                                    type="date"
+                                    name="appointment_date"
+                                    class="form-control"
+                                    value="{{ selected_date|default:'' }}"
+                                    min="{{ today|date:'Y-m-d' }}"
+                                    onchange="loadAvailableSlots(this.value)"
+                                    required
+                                >
+
+                                {% if form.appointment_date.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.appointment_date.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                            {% if selected_date %}
+
+                                <div class="mb-4">
+
+                                    <label class="form-label fw-semibold">
+                                        Available Time Slots
+                                    </label>
+
+                                    {% if available_slots %}
+
+                                        <div class="row g-2">
+
+                                            {% for slot in available_slots %}
+
+                                                <div class="col-6 col-md-4">
+
+                                                    <label class="w-100">
+
+                                                        <input
+                                                            type="radio"
+                                                            name="appointment_time"
+                                                            value="{{ slot|time:'H:i' }}"
+                                                            class="btn-check"
+                                                            required
+                                                        >
+
+                                                        <span class="btn btn-outline-primary w-100">
+                                                            {{ slot|time:"h:i A" }}
+                                                        </span>
+
+                                                    </label>
+
+                                                </div>
+
+                                            {% endfor %}
+
+                                        </div>
+
+                                    {% else %}
+
+                                        <div class="alert alert-warning">
+                                            <i class="bi bi-calendar-x me-2"></i>
+                                            No appointment slots are available
+                                            for this date.
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Please select a date to see available
+                                    appointment slots.
+                                </div>
+
+                            {% endif %}
+
+                            <div class="mb-4">
+
+                                <label class="form-label fw-semibold">
+                                    Reason for Consultation
+                                </label>
+
+                                {{ form.reason }}
+
+                                {% if form.reason.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ form.reason.errors }}
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="d-flex gap-2">
+
+                                <a
+                                    href="{% url 'doctor_detail' doctor.id %}"
+                                    class="btn btn-outline-secondary w-50"
+                                >
+                                    Cancel
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary w-50"
+                                    {% if not available_slots %}disabled{% endif %}
+                                >
+                                    <i class="bi bi-calendar-check me-1"></i>
+                                    Book Appointment
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    function loadAvailableSlots(date) {
+        if (date) {
+            window.location.href =
+                "{% url 'book_appointment' doctor.id %}?appointment_date=" + date;
+        }
+    }
+</script>
+
+{% endblock %}

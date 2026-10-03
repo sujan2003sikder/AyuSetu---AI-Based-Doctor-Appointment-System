@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ specialization.name }} Doctors - AyuSetu
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="container">
+
+        <a
+            href="{% url 'specialization_list' %}"
+            class="text-decoration-none"
+        >
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Specializations
+        </a>
+
+
+        <div class="text-center my-5">
+
+            <span class="badge bg-primary mb-3">
+                Medical Specialists
+            </span>
+
+            <h1 class="fw-bold">
+                {{ specialization.name }}
+            </h1>
+
+            {% if specialization.description %}
+
+                <p class="text-muted">
+                    {{ specialization.description }}
+                </p>
+
+            {% endif %}
+
+            <p class="text-muted mb-0">
+
+                <i class="bi bi-people me-1"></i>
+
+                {{ doctors|length }}
+                Doctor{{ doctors|length|pluralize }}
+                Available
+
+            </p>
+
+        </div>
+
+
+        {% if doctors %}
+
+            <div class="row g-4">
+
+                {% for doctor in doctors %}
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="card h-100 border-0 shadow-sm">
+
+
+                            {% if doctor.profile_image %}
+
+                                <img
+                                    src="{{ doctor.profile_image.url }}"
+                                    class="card-img-top"
+                                    alt="Dr. {{ doctor }}"
+                                    style="height: 250px; object-fit: cover;"
+                                >
+
+                            {% else %}
+
+                                <div
+                                    class="bg-light text-center py-5"
+                                    style="height: 250px;"
+                                >
+
+                                    <i
+                                        class="bi bi-person-circle text-secondary"
+                                        style="font-size: 120px;"
+                                    ></i>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="card-body p-4">
+
+                                <span class="badge bg-success mb-2">
+                                    <i class="bi bi-patch-check-fill me-1"></i>
+                                    Verified Doctor
+                                </span>
+
+
+                                <h4 class="fw-bold">
+                                    Dr. {{ doctor }}
+                                </h4>
+
+
+                                <p class="text-primary fw-semibold">
+                                    {{ doctor.specialization.name }}
+                                </p>
+
+
+                                <p class="text-muted mb-2">
+
+                                    <i class="bi bi-mortarboard me-1"></i>
+
+                                    {{ doctor.qualification }}
+
+                                </p>
+
+
+                                <p class="text-muted mb-2">
+
+                                    <i class="bi bi-award me-1"></i>
+
+                                    {{ doctor.experience }}
+                                    years experience
+
+                                </p>
+
+
+                                
+
+
+                                <div class="d-grid gap-2">
+
+                                    <a
+                                        href="{% url 'doctor_detail' doctor.id %}"
+                                        class="btn btn-outline-primary"
+                                    >
+                                        <i class="bi bi-person-vcard me-1"></i>
+                                        View Profile
+                                    </a>
+
+
+                                    {% if user.is_authenticated %}
+
+                                        {% if user.role == 'patient' %}
+
+                                            <a
+                                                href="{% url 'book_appointment' doctor.id %}"
+                                                class="btn btn-primary"
+                                            >
+                                                <i class="bi bi-calendar-check me-1"></i>
+                                                Book Appointment
+                                            </a>
+
+                                        {% endif %}
+
+                                    {% else %}
+
+                                        <a
+                                            href="{% url 'login' %}?next={% url 'book_appointment' doctor.id %}"
+                                            class="btn btn-primary"
+                                        >
+                                            <i class="bi bi-box-arrow-in-right me-1"></i>
+                                            Login to Book
+                                        </a>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="text-center py-5">
+
+                <i
+                    class="bi bi-person-x text-muted"
+                    style="font-size: 70px;"
+                ></i>
+
+                <h3 class="fw-bold mt-3">
+                    No Verified Doctors Available
+                </h3>
+
+                <p class="text-muted">
+                    There are currently no verified doctors available
+                    in {{ specialization.name }}.
+                </p>
+
+
+                <a
+                    href="{% url 'specialization_list' %}"
+                    class="btn btn-primary"
+                >
+                    Browse Specializations
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

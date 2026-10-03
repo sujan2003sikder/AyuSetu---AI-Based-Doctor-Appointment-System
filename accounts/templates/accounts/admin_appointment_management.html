@@ -1,0 +1,385 @@
+{% extends 'base.html' %}
+
+{% block title %}Appointment Management | AyuSetu{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                Appointment Management
+            </h1>
+
+            <p class="text-muted mb-0">
+                View all patient and doctor appointments.
+            </p>
+        </div>
+
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Admin Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- Appointment Search -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="get" action="{% url 'admin_appointment_management' %}">
+
+                <div class="row g-2">
+
+                    <div class="col-md-9">
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+                            <input type="text" name="search" class="form-control"
+                                placeholder="Search by patient, doctor or specialization..." value="{{ search_query }}">
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search me-1"></i>
+                            Search Appointments
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                {% if search_query %}
+
+                <div class="mt-3">
+
+                    <span class="text-muted">
+                        Search results for:
+                    </span>
+
+                    <strong>
+                        "{{ search_query }}"
+                    </strong>
+
+                    <a href="{% url 'admin_appointment_management' %}" class="btn btn-sm btn-outline-secondary ms-2">
+                        Clear Search
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Status Filters -->
+
+    <div class="mb-4">
+
+        <div class="btn-group flex-wrap" role="group">
+
+            <a href="{% url 'admin_appointment_management' %}{% if search_query %}?search={{ search_query|urlencode }}{% endif %}"
+                class="btn {% if status_filter == 'all' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                All
+            </a>
+
+            <a href="{% url 'admin_appointment_management' %}?status=pending{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
+                class="btn {% if status_filter == 'pending' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                Pending
+            </a>
+
+            <a href="{% url 'admin_appointment_management' %}?status=confirmed{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
+                class="btn {% if status_filter == 'confirmed' %}btn-success{% else %}btn-outline-success{% endif %}">
+                Confirmed
+            </a>
+
+            <a href="{% url 'admin_appointment_management' %}?status=completed{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
+                class="btn {% if status_filter == 'completed' %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                Completed
+            </a>
+
+            <a href="{% url 'admin_appointment_management' %}?status=rejected{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
+                class="btn {% if status_filter == 'rejected' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                Rejected
+            </a>
+
+            <a href="{% url 'admin_appointment_management' %}?status=cancelled{% if search_query %}&search={{ search_query|urlencode }}{% endif %}"
+                class="btn {% if status_filter == 'cancelled' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                Cancelled
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- Appointment List -->
+
+    {% if appointments %}
+
+    <div class="row g-4">
+
+        {% for appointment in appointments %}
+
+        <div class="col-12">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="row align-items-center">
+
+
+                        <!-- Patient -->
+
+                        <div class="col-lg-3 mb-3 mb-lg-0">
+
+                            <h5 class="fw-bold mb-2">
+
+                                <i class="bi bi-person me-1"></i>
+
+                                {% if appointment.patient.get_full_name %}
+                                {{ appointment.patient.get_full_name }}
+                                {% else %}
+                                {{ appointment.patient.username }}
+                                {% endif %}
+
+                            </h5>
+
+                            <p class="text-muted mb-1">
+                                {{ appointment.patient.email }}
+                            </p>
+
+                            <p class="text-muted mb-0">
+                                {{ appointment.patient.phone|default:"No phone provided" }}
+                            </p>
+
+                        </div>
+
+
+                        <!-- Doctor -->
+
+                        <div class="col-lg-3 mb-3 mb-lg-0">
+
+                            <h6 class="fw-bold mb-2">
+
+                                <i class="bi bi-heart-pulse me-1"></i>
+
+                                Doctor
+
+                            </h6>
+
+                            <p class="mb-1">
+
+                                <strong>
+
+                                    Dr.
+
+                                    {% if appointment.doctor.user.get_full_name %}
+
+                                    {{ appointment.doctor.user.get_full_name }}
+
+                                    {% else %}
+
+                                    {{ appointment.doctor.user.username }}
+
+                                    {% endif %}
+
+                                </strong>
+
+                            </p>
+
+                            <p class="text-muted mb-0">
+
+                                {{ appointment.doctor.specialization.name }}
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- Appointment -->
+
+                        <div class="col-lg-3 mb-3 mb-lg-0">
+
+                            <h6 class="fw-bold mb-2">
+
+                                <i class="bi bi-calendar-event me-1"></i>
+
+                                Appointment
+
+                            </h6>
+
+                            <p class="mb-1">
+
+                                <strong>Date:</strong>
+
+                                {{ appointment.appointment_date|date:"d M Y" }}
+
+                            </p>
+
+                            <p class="mb-0">
+
+                                <strong>Time:</strong>
+
+                                {{ appointment.appointment_time|time:"h:i A" }}
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- Status -->
+
+                        <div class="col-lg-3">
+
+                            <div class="text-lg-end">
+
+                                {% if appointment.status == 'pending' %}
+
+                                <span class="badge bg-warning text-dark fs-6 mb-3">
+                                    Pending
+                                </span>
+
+                                {% elif appointment.status == 'confirmed' %}
+
+                                <span class="badge bg-success fs-6 mb-3">
+                                    Confirmed
+                                </span>
+
+                                {% elif appointment.status == 'completed' %}
+
+                                <span class="badge bg-primary fs-6 mb-3">
+                                    Completed
+                                </span>
+
+                                {% elif appointment.status == 'rejected' %}
+
+                                <span class="badge bg-danger fs-6 mb-3">
+                                    Rejected
+                                </span>
+
+                                {% elif appointment.status == 'cancelled' %}
+
+                                <span class="badge bg-secondary fs-6 mb-3">
+                                    Cancelled
+                                </span>
+
+                                {% endif %}
+
+                                <br>
+
+                                <a href="{% url 'admin_appointment_detail' appointment.id %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye me-1"></i>
+                                    View Details
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Reason -->
+
+                    {% if appointment.reason %}
+
+                    <hr>
+
+                    <div>
+
+                        <strong>
+
+                            <i class="bi bi-chat-left-text me-1"></i>
+
+                            Reason:
+
+                        </strong>
+
+                        <span class="text-muted">
+
+                            {{ appointment.reason }}
+
+                        </span>
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- Empty State -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+            <i class="bi bi-calendar-x fs-1 text-muted"></i>
+
+            <h4 class="mt-3">
+                No appointments found
+            </h4>
+
+            {% if search_query %}
+
+            <p class="text-muted">
+                No appointments matched
+                "<strong>{{ search_query }}</strong>".
+            </p>
+
+            <a href="{% url 'admin_appointment_management' %}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left me-1"></i>
+                View All Appointments
+            </a>
+
+            {% else %}
+
+            <p class="text-muted mb-0">
+                Appointments will appear here when patients make bookings.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

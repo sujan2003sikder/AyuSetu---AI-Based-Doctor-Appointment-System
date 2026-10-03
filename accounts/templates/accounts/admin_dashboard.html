@@ -1,0 +1,665 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard | AyuSetu{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+
+    <!-- Header -->
+
+    <div class="mb-5">
+
+        <h1 class="fw-bold">
+            Admin Dashboard
+        </h1>
+
+        <p class="text-muted">
+            Manage AyuSetu doctors, patients, appointments and specializations.
+        </p>
+
+    </div>
+
+
+    <!-- Statistics -->
+
+    <div class="row g-4 mb-5">
+
+
+        <!-- Total Doctors -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="fs-2 text-primary mb-2">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+
+                    <h6 class="text-muted">
+                        Total Doctors
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ total_doctors }}
+                    </h2>
+
+                    <a
+                        href="{% url 'doctor_list' %}"
+                        class="btn btn-sm btn-outline-primary"
+                    >
+                        View Doctors
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Pending Doctors -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="fs-2 text-warning mb-2">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+
+                    <h6 class="text-muted">
+                        Pending Verification
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ pending_doctors }}
+                    </h2>
+
+                    <a
+                        href="{% url 'admin_doctor_verification' %}?status=pending"
+                        class="btn btn-sm btn-outline-warning"
+                    >
+                        Verify Doctors
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Approved Doctors -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="fs-2 text-success mb-2">
+                        <i class="bi bi-person-check"></i>
+                    </div>
+
+                    <h6 class="text-muted">
+                        Approved Doctors
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ approved_doctors }}
+                    </h2>
+
+                    <a
+                        href="{% url 'admin_doctor_verification' %}?status=approved"
+                        class="btn btn-sm btn-outline-success"
+                    >
+                        Manage Doctors
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Rejected Doctors -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="fs-2 text-danger mb-2">
+                        <i class="bi bi-person-x"></i>
+                    </div>
+
+                    <h6 class="text-muted">
+                        Rejected Doctors
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ rejected_doctors }}
+                    </h2>
+
+                    <a
+                        href="{% url 'admin_doctor_verification' %}?status=rejected"
+                        class="btn btn-sm btn-outline-danger"
+                    >
+                        View Rejected
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total Patients -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <div class="fs-2 text-info mb-2">
+                        <i class="bi bi-people"></i>
+                    </div>
+
+                    <h6 class="text-muted">
+                        Total Patients
+                    </h6>
+
+                    <h2 class="fw-bold">
+                        {{ total_patients }}
+                    </h2>
+
+                    <a
+                        href="{% url 'admin_patient_management' %}"
+                        class="btn btn-sm btn-outline-info"
+                    >
+                        Manage Patients
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- Management -->
+
+    <div class="row g-4">
+
+
+        <!-- Appointments -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center p-4">
+
+                    <i class="bi bi-calendar2-check fs-1 text-primary"></i>
+
+                    <h4 class="mt-3">
+                        Appointments
+                    </h4>
+
+                    <p class="text-muted">
+                        View and manage all patient appointments.
+                    </p>
+
+                    <h3 class="fw-bold mb-3">
+                        {{ total_appointments }}
+                    </h3>
+
+                    <a
+                        href="{% url 'admin_appointment_management' %}"
+                        class="btn btn-sm btn-outline-primary"
+                    >
+                        <i class="bi bi-calendar-check me-1"></i>
+                        Manage Appointments
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Specializations -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center p-4">
+
+                    <i class="bi bi-heart-pulse fs-1 text-danger"></i>
+
+                    <h4 class="mt-3">
+                        Specializations
+                    </h4>
+
+                    <p class="text-muted">
+                        Add and manage medical specializations.
+                    </p>
+
+                    <h3 class="fw-bold mb-3">
+                        {{ total_specializations }}
+                    </h3>
+
+                    <a
+                        href="{% url 'admin_specialization_management' %}"
+                        class="btn btn-sm btn-outline-primary"
+                    >
+                        <i class="bi bi-hospital me-1"></i>
+                        Manage Specializations
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Django Admin -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center p-4">
+
+                    <i class="bi bi-shield-check fs-1 text-success"></i>
+
+                    <h4 class="mt-3">
+                        Django Admin
+                    </h4>
+
+                    <p class="text-muted">
+                        Access the complete AyuSetu administration panel.
+                    </p>
+
+                    <a
+                        href="/admin/"
+                        class="btn btn-success"
+                    >
+                        Open Admin Panel
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Doctor Verification -->
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center p-4">
+
+                    <i class="bi bi-person-check fs-1 text-warning"></i>
+
+                    <h4 class="mt-3">
+                        Doctor Verification
+                    </h4>
+
+                    <p class="text-muted">
+                        Review doctor registrations and manage verification.
+                    </p>
+
+                    <a
+                        href="{% url 'admin_doctor_verification' %}"
+                        class="btn btn-warning"
+                    >
+                        Verify Doctors
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- Recent Appointments -->
+
+    <div class="card border-0 shadow-sm mt-5">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <div>
+
+                    <h4 class="fw-bold mb-1">
+
+                        <i class="bi bi-clock-history me-2"></i>
+
+                        Recent Appointments
+
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Latest appointments booked by patients.
+                    </p>
+
+                </div>
+
+                <a
+                    href="{% url 'admin_appointment_management' %}"
+                    class="btn btn-sm btn-outline-primary"
+                >
+                    View All
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+
+            </div>
+
+
+            {% if recent_appointments %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>
+                                Patient
+                            </th>
+
+                            <th>
+                                Doctor
+                            </th>
+
+                            <th>
+                                Specialization
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Time
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for appointment in recent_appointments %}
+
+                        <tr>
+
+                            <td>
+
+                                <strong>
+
+                                    {% if appointment.patient.get_full_name %}
+
+                                        {{ appointment.patient.get_full_name }}
+
+                                    {% else %}
+
+                                        {{ appointment.patient.username }}
+
+                                    {% endif %}
+
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                Dr.
+
+                                {% if appointment.doctor.user.get_full_name %}
+
+                                    {{ appointment.doctor.user.get_full_name }}
+
+                                {% else %}
+
+                                    {{ appointment.doctor.user.username }}
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ appointment.doctor.specialization.name }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ appointment.appointment_date|date:"d M Y" }}
+
+                            </td>
+
+
+                            <td>
+
+                                {{ appointment.appointment_time|time:"h:i A" }}
+
+                            </td>
+
+
+                            <td>
+
+                                {% if appointment.status == 'pending' %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Pending
+                                    </span>
+
+                                {% elif appointment.status == 'confirmed' %}
+
+                                    <span class="badge bg-success">
+                                        Confirmed
+                                    </span>
+
+                                {% elif appointment.status == 'completed' %}
+
+                                    <span class="badge bg-primary">
+                                        Completed
+                                    </span>
+
+                                {% elif appointment.status == 'rejected' %}
+
+                                    <span class="badge bg-danger">
+                                        Rejected
+                                    </span>
+
+                                {% elif appointment.status == 'cancelled' %}
+
+                                    <span class="badge bg-secondary">
+                                        Cancelled
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% else %}
+
+            <div class="text-center py-4">
+
+                <i class="bi bi-calendar-x fs-1 text-muted"></i>
+
+                <h5 class="mt-3">
+                    No appointments yet
+                </h5>
+
+                <p class="text-muted mb-0">
+                    Recent appointments will appear here.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+</div>
+<!-- Pending Doctor Registrations -->
+<div class="card border-0 shadow-sm mt-5">
+    <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="fw-bold mb-1">
+                    <i class="bi bi-person-exclamation me-2"></i>
+                    Pending Doctor Registrations
+                </h4>
+                <p class="text-muted mb-0">
+                    Doctors waiting for verification.
+                </p>
+            </div>
+
+            <a href="{% url 'admin_doctor_verification' %}?status=pending"
+               class="btn btn-sm btn-outline-warning">
+                View All
+                <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        {% if pending_doctor_list %}
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Doctor</th>
+                        <th>Specialization</th>
+                        <th>Registration No.</th>
+                        <th>Experience</th>
+                        <th>Registered</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for doctor in pending_doctor_list %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                Dr.
+                                {% if doctor.user.get_full_name %}
+                                    {{ doctor.user.get_full_name }}
+                                {% else %}
+                                    {{ doctor.user.username }}
+                                {% endif %}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ doctor.specialization.name }}
+                        </td>
+
+                        <td>
+                            {{ doctor.registration_number }}
+                        </td>
+
+                        <td>
+                            {{ doctor.experience }} year{{ doctor.experience|pluralize }}
+                        </td>
+
+                        <td>
+                            {{ doctor.created_at|date:"d M Y" }}
+                        </td>
+
+                        <td>
+                            <a href="{% url 'admin_doctor_detail' doctor.id %}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>
+                                Review
+                            </a>
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+
+        <div class="text-center py-4">
+
+            <i class="bi bi-person-check fs-1 text-success"></i>
+
+            <h5 class="mt-3">
+                No Pending Registrations
+            </h5>
+
+            <p class="text-muted mb-0">
+                All doctor registrations have been reviewed.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

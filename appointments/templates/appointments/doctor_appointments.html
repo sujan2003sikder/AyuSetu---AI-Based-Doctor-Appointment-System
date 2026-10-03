@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+
+{% block title %}
+My Appointments - AyuSetu
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="text-center mb-5">
+
+            <span class="badge bg-primary mb-3">
+                <i class="bi bi-calendar-check me-1"></i>
+                Doctor Portal
+            </span>
+
+            <h1 class="fw-bold">
+                Patient Appointments
+            </h1>
+
+            <p class="text-muted">
+                Manage your patient appointments
+            </p>
+
+        </div>
+
+
+        {% if appointments %}
+
+            <div class="row g-4">
+
+                {% for appointment in appointments %}
+
+                    <div class="col-lg-6">
+
+                        <div class="card border-0 shadow-sm h-100">
+
+                            <div class="card-body p-4">
+
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+
+                                    <div>
+
+                                        <h5 class="fw-bold mb-1">
+                                            {{ appointment.patient.get_full_name|default:appointment.patient.username }}
+                                        </h5>
+
+                                        <p class="text-muted mb-0">
+                                            Patient
+                                        </p>
+
+                                    </div>
+
+
+                                    {% if appointment.status == 'pending' %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            Pending
+                                        </span>
+
+                                    {% elif appointment.status == 'confirmed' %}
+
+                                        <span class="badge bg-success">
+                                            Confirmed
+                                        </span>
+
+                                    {% elif appointment.status == 'completed' %}
+
+                                        <span class="badge bg-primary">
+                                            Completed
+                                        </span>
+
+                                    {% elif appointment.status == 'rejected' %}
+
+                                        <span class="badge bg-danger">
+                                            Rejected
+                                        </span>
+
+                                    {% elif appointment.status == 'cancelled' %}
+
+                                        <span class="badge bg-secondary">
+                                            Cancelled
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <hr>
+
+
+                                <div class="row g-3 mb-3">
+
+                                    <div class="col-6">
+
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar3 me-1"></i>
+                                            Date
+                                        </small>
+
+                                        <div class="fw-semibold">
+                                            {{ appointment.appointment_date|date:"d M Y" }}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-6">
+
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>
+                                            Time
+                                        </small>
+
+                                        <div class="fw-semibold">
+                                            {{ appointment.appointment_time|time:"h:i A" }}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-6">
+
+                                        <small class="text-muted">
+                                            <i class="bi bi-telephone me-1"></i>
+                                            Phone
+                                        </small>
+
+                                        <div class="fw-semibold">
+                                            {{ appointment.patient.phone|default:"Not provided" }}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-6">
+
+                                        <small class="text-muted">
+                                            <i class="bi bi-envelope me-1"></i>
+                                            Email
+                                        </small>
+
+                                        <div class="fw-semibold text-break">
+                                            {{ appointment.patient.email }}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-12">
+
+                                        <small class="text-muted">
+                                            <i class="bi bi-chat-left-text me-1"></i>
+                                            Reason for Consultation
+                                        </small>
+
+                                        <div class="fw-semibold">
+
+                                            {% if appointment.reason %}
+
+                                                {{ appointment.reason }}
+
+                                            {% else %}
+
+                                                <span class="text-muted">
+                                                    No reason provided
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {% if appointment.status == 'pending' %}
+
+                                    <div class="d-flex gap-2">
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'confirm_appointment' appointment.id %}"
+                                            class="flex-grow-1"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-success w-100"
+                                            >
+                                                <i class="bi bi-check-circle me-1"></i>
+                                                Confirm
+                                            </button>
+
+                                        </form>
+
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'reject_appointment' appointment.id %}"
+                                            class="flex-grow-1"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-outline-danger w-100"
+                                                onclick="return confirm('Are you sure you want to reject this appointment?');"
+                                            >
+                                                <i class="bi bi-x-circle me-1"></i>
+                                                Reject
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+
+                                {% elif appointment.status == 'confirmed' %}
+
+                                    <form
+                                        method="post"
+                                        action="{% url 'complete_appointment' appointment.id %}"
+                                    >
+
+                                        {% csrf_token %}
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-primary w-100"
+                                            onclick="return confirm('Mark this appointment as completed?');"
+                                        >
+                                            <i class="bi bi-check2-circle me-1"></i>
+                                            Mark as Completed
+                                        </button>
+
+                                    </form>
+
+
+                                {% elif appointment.status == 'completed' %}
+
+                                    <div class="alert alert-success mb-0 text-center">
+
+                                        <i class="bi bi-check2-all me-1"></i>
+
+                                        Appointment Completed
+
+                                    </div>
+
+
+                                {% elif appointment.status == 'rejected' %}
+
+                                    <div class="alert alert-danger mb-0 text-center">
+
+                                        <i class="bi bi-x-circle me-1"></i>
+
+                                        Appointment Rejected
+
+                                    </div>
+
+
+                                {% elif appointment.status == 'cancelled' %}
+
+                                    <div class="alert alert-secondary mb-0 text-center">
+
+                                        <i class="bi bi-slash-circle me-1"></i>
+
+                                        Appointment Cancelled by Patient
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <div class="text-center py-5">
+
+                <i
+                    class="bi bi-calendar-x text-muted"
+                    style="font-size: 70px;"
+                ></i>
+
+                <h3 class="fw-bold mt-3">
+                    No Appointments
+                </h3>
+
+                <p class="text-muted">
+                    You currently have no patient appointments.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

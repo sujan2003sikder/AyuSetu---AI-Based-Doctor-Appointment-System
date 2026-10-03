@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+
+{% block title %}Appointment Details | AyuSetu{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                Appointment Details
+            </h1>
+
+            <p class="text-muted mb-0">
+                Complete information about this appointment.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'admin_appointment_management' %}"
+            class="btn btn-outline-primary"
+        >
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Appointments
+        </a>
+
+    </div>
+
+
+    <!-- Status -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h4 class="fw-bold mb-1">
+                        Appointment #{{ appointment.id }}
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Booked on
+                        {{ appointment.created_at|date:"d M Y, h:i A" }}
+                    </p>
+                </div>
+
+                <div>
+
+                    {% if appointment.status == 'pending' %}
+
+                        <span class="badge bg-warning text-dark fs-6">
+                            Pending
+                        </span>
+
+                    {% elif appointment.status == 'confirmed' %}
+
+                        <span class="badge bg-success fs-6">
+                            Confirmed
+                        </span>
+
+                    {% elif appointment.status == 'completed' %}
+
+                        <span class="badge bg-primary fs-6">
+                            Completed
+                        </span>
+
+                    {% elif appointment.status == 'rejected' %}
+
+                        <span class="badge bg-danger fs-6">
+                            Rejected
+                        </span>
+
+                    {% elif appointment.status == 'cancelled' %}
+
+                        <span class="badge bg-secondary fs-6">
+                            Cancelled
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row g-4">
+
+
+        <!-- Patient Information -->
+
+        <div class="col-lg-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+
+                        <i class="bi bi-person-circle me-2"></i>
+
+                        Patient Information
+
+                    </h4>
+
+                    <div class="mb-3">
+
+                        <strong>Name</strong>
+
+                        <p class="text-muted mb-0">
+
+                            {% if appointment.patient.get_full_name %}
+
+                                {{ appointment.patient.get_full_name }}
+
+                            {% else %}
+
+                                {{ appointment.patient.username }}
+
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <strong>Username</strong>
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.patient.username }}
+                        </p>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <strong>Email</strong>
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.patient.email }}
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <strong>Phone</strong>
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.patient.phone|default:"Not provided" }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Doctor Information -->
+
+        <div class="col-lg-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+
+                        <i class="bi bi-heart-pulse me-2"></i>
+
+                        Doctor Information
+
+                    </h4>
+
+                    <div class="mb-3">
+
+                        <strong>Doctor</strong>
+
+                        <p class="text-muted mb-0">
+
+                            Dr.
+
+                            {% if appointment.doctor.user.get_full_name %}
+
+                                {{ appointment.doctor.user.get_full_name }}
+
+                            {% else %}
+
+                                {{ appointment.doctor.user.username }}
+
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <strong>Specialization</strong>
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.doctor.specialization.name }}
+                        </p>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <strong>Qualification</strong>
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.doctor.qualification }}
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <strong>Experience</strong>
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.doctor.experience }} years
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Appointment Information -->
+
+        <div class="col-lg-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+
+                        <i class="bi bi-calendar-check me-2"></i>
+
+                        Appointment Information
+
+                    </h4>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <strong>Date</strong>
+
+                            <p class="text-muted mb-0">
+                                {{ appointment.appointment_date|date:"d M Y" }}
+                            </p>
+
+                        </div>
+
+                        
+
+                        
+
+                        <div class="col-md-6">
+
+                            <strong>Last Updated</strong>
+
+                            <p class="text-muted mb-0">
+                                {{ appointment.updated_at|date:"d M Y, h:i A" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Clinic Information -->
+
+        <div class="col-lg-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+
+                        <i class="bi bi-hospital me-2"></i>
+
+                        Clinic Information
+
+                    </h4>
+
+                    <div class="mb-3">
+
+                        <strong>Clinic Name</strong>
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.doctor.clinic_name|default:"Not provided" }}
+                        </p>
+
+                    </div>
+
+                    <div>
+
+                        <strong>Clinic Address</strong>
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.doctor.clinic_address|default:"Not provided" }}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Reason -->
+
+        <div class="col-12">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-3">
+
+                        <i class="bi bi-chat-left-text me-2"></i>
+
+                        Reason for Appointment
+
+                    </h4>
+
+                    {% if appointment.reason %}
+
+                        <p class="text-muted mb-0">
+                            {{ appointment.reason }}
+                        </p>
+
+                    {% else %}
+
+                        <p class="text-muted mb-0">
+                            No reason was provided by the patient.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

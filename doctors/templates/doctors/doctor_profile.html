@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Profile - AyuSetu{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-9">
+
+                <div class="card border-0 shadow-sm">
+
+                    <div class="card-body p-4 p-md-5">
+
+                        <div class="text-center mb-4">
+
+                            {% if doctor.profile_image %}
+
+                                <img
+                                    src="{{ doctor.profile_image.url }}"
+                                    alt="Doctor Profile"
+                                    class="rounded-circle mb-3"
+                                    width="120"
+                                    height="120"
+                                    style="object-fit: cover;"
+                                >
+
+                            {% else %}
+
+                                <i class="bi bi-person-circle display-3 text-primary"></i>
+
+                            {% endif %}
+
+                            <h2 class="fw-bold mt-2">
+                                Doctor Profile
+                            </h2>
+
+                            <p class="text-muted">
+                                Update your professional information
+                            </p>
+
+                        </div>
+
+
+                        {% if form.non_field_errors %}
+
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="alert alert-light border">
+
+                            <strong>
+                                Verification Status:
+                            </strong>
+
+                            {% if doctor.verification_status == 'approved' %}
+
+                                <span class="badge bg-success ms-2">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Approved
+                                </span>
+
+                            {% elif doctor.verification_status == 'pending' %}
+
+                                <span class="badge bg-warning text-dark ms-2">
+                                    <i class="bi bi-clock me-1"></i>
+                                    Pending
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge bg-danger ms-2">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    Rejected
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <form method="post" enctype="multipart/form-data">
+
+                            {% csrf_token %}
+
+
+                            <div class="row g-4">
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        First Name
+                                    </label>
+
+                                    {{ form.first_name }}
+
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.first_name.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        Last Name
+                                    </label>
+
+                                    {{ form.last_name }}
+
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.last_name.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        Email
+                                    </label>
+
+                                    {{ form.email }}
+
+                                    {% if form.email.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.email.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        Phone
+                                    </label>
+
+                                    {{ form.phone }}
+
+                                    {% if form.phone.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.phone.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        Qualification
+                                    </label>
+
+                                    {{ form.qualification }}
+
+                                    {% if form.qualification.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.qualification.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        Specialization
+                                    </label>
+
+                                    {{ form.specialization }}
+
+                                    {% if form.specialization.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.specialization.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        Experience (Years)
+                                    </label>
+
+                                    {{ form.experience }}
+
+                                    {% if form.experience.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.experience.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        Clinic Name
+                                    </label>
+
+                                    {{ form.clinic_name }}
+
+                                    {% if form.clinic_name.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.clinic_name.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <label class="form-label fw-semibold">
+                                        Profile Image
+                                    </label>
+
+                                    {{ form.profile_image }}
+
+                                    {% if form.profile_image.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.profile_image.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <label class="form-label fw-semibold">
+                                        Clinic Address
+                                    </label>
+
+                                    {{ form.clinic_address }}
+
+                                    {% if form.clinic_address.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.clinic_address.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <label class="form-label fw-semibold">
+                                        Professional Bio
+                                    </label>
+
+                                    {{ form.bio }}
+
+                                    {% if form.bio.errors %}
+                                        <div class="text-danger small">
+                                            {{ form.bio.errors }}
+                                        </div>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="d-flex justify-content-center gap-2 mt-4">
+
+                                <a
+                                    href="{% url 'doctor_appointments' %}"
+                                    class="btn btn-outline-secondary"
+                                >
+                                    <i class="bi bi-arrow-left me-1"></i>
+                                    Back
+                                </a>
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Save Changes
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Management | AyuSetu{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                Patient Management
+            </h1>
+
+            <p class="text-muted mb-0">
+                View and manage registered AyuSetu patients.
+            </p>
+        </div>
+
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Admin Dashboard
+        </a>
+
+    </div>
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" action="{% url 'admin_patient_management' %}">
+                <div class="row g-2">
+
+                    <div class="col-md-10">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+                            <input type="text" name="search" class="form-control"
+                                placeholder="Search by patient name, username, email or phone..."
+                                value="{{ search_query }}">
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search me-1"></i>
+                            Search
+                        </button>
+                    </div>
+
+                </div>
+
+                {% if search_query %}
+                <div class="mt-3">
+                    <span class="text-muted">
+                        Search results for:
+                    </span>
+
+                    <strong>"{{ search_query }}"</strong>
+
+                    <a href="{% url 'admin_patient_management' %}" class="btn btn-sm btn-outline-secondary ms-2">
+                        Clear Search
+                    </a>
+                </div>
+                {% endif %}
+
+            </form>
+        </div>
+    </div>
+
+
+    {% if patients %}
+
+    <div class="row g-4">
+
+        {% for patient in patients %}
+
+        <div class="col-12">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="row align-items-center">
+
+
+                        <!-- Patient Icon -->
+
+                        <div class="col-md-2 text-center mb-3 mb-md-0">
+
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto"
+                                style="width: 100px; height: 100px;">
+                                <i class="bi bi-person fs-1 text-primary"></i>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Patient Information -->
+
+                        <div class="col-md-7">
+
+                            <h4 class="fw-bold mb-2">
+
+                                {% if patient.get_full_name %}
+                                {{ patient.get_full_name }}
+                                {% else %}
+                                {{ patient.username }}
+                                {% endif %}
+
+                            </h4>
+
+
+                            <p class="mb-1">
+
+                                <strong>Username:</strong>
+                                {{ patient.username }}
+
+                            </p>
+
+
+                            <p class="mb-1">
+
+                                <strong>Email:</strong>
+                                {{ patient.email }}
+
+                            </p>
+
+
+                            <p class="mb-1">
+
+                                <strong>Phone:</strong>
+                                {{ patient.phone|default:"Not provided" }}
+
+                            </p>
+
+
+                            {% if patient.patient_profile %}
+
+                            <p class="mb-1">
+
+                                <strong>Date of Birth:</strong>
+
+                                {{ patient.patient_profile.date_of_birth|default:"Not provided" }}
+
+                            </p>
+
+
+                            <p class="mb-1">
+
+                                <strong>Gender:</strong>
+
+                                {{ patient.patient_profile.gender|default:"Not provided" }}
+
+                            </p>
+
+
+                            <p class="mb-1">
+
+                                <strong>Address:</strong>
+
+                                {{ patient.patient_profile.address|default:"Not provided" }}
+
+                            </p>
+
+                            {% endif %}
+
+
+                            <p class="mb-0">
+
+                                <strong>Joined:</strong>
+
+                                {{ patient.date_joined|date:"d M Y" }}
+
+                            </p>
+
+                        </div>
+
+
+                        <!-- Patient Status -->
+
+                        <div class="col-md-3 mt-4 mt-md-0">
+
+                            <div class="text-center">
+
+                                {% if patient.is_active %}
+
+                                <div class="alert alert-success mb-3">
+
+                                    <i class="bi bi-check-circle-fill"></i>
+
+                                    Active Account
+
+                                </div>
+
+                                {% else %}
+
+                                <div class="alert alert-danger mb-3">
+
+                                    <i class="bi bi-x-circle-fill"></i>
+
+                                    Inactive Account
+
+                                </div>
+
+                                {% endif %}
+
+
+                                <a href="{% url 'admin_patient_detail' patient.id %}"
+                                    class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-eye me-1"></i>
+                                    View Details
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    {% else %}
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+            <i class="bi bi-people fs-1 text-muted"></i>
+
+            <h4 class="mt-3">
+                No patients registered yet
+            </h4>
+
+            <p class="text-muted mb-0">
+                Registered patients will appear here.
+            </p>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,426 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Symptom Checker | AyuSetu{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <div class="mb-3">
+            <i class="bi bi-robot text-primary" style="font-size: 3.5rem;"></i>
+        </div>
+
+        <h1 class="fw-bold">
+            AI Symptom Checker
+        </h1>
+
+        <p class="text-muted mx-auto" style="max-width: 700px;">
+            Describe your symptoms and AyuSetu will suggest a relevant
+            medical specialization and show available approved doctors.
+        </p>
+
+    </div>
+
+
+    <!-- Information -->
+
+    <div class="row justify-content-center mb-4">
+
+        <div class="col-lg-8">
+
+            <div class="alert alert-info border-0 shadow-sm">
+
+                <div class="d-flex">
+
+                    <i class="bi bi-lightbulb-fill fs-4 me-3"></i>
+
+                    <div>
+
+                        <strong>How it works</strong>
+
+                        <p class="mb-0 mt-1">
+                            Enter your symptoms in simple language.
+                            The system analyzes the symptoms and suggests
+                            a suitable medical specialization.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Symptom Form -->
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-chat-left-text me-1"></i>
+                            Describe your symptoms
+                        </label>
+
+                        <textarea name="symptoms" class="form-control" rows="7"
+                            placeholder="Example: I have frequent headaches, dizziness and difficulty concentrating..."
+                            required>{{ symptoms }}</textarea>
+
+
+                        <div class="mt-3">
+
+                            <small class="text-muted">
+                                <strong>Examples:</strong>
+                                headache, dizziness, chest pain,
+                                skin rash, stomach pain, acidity
+                            </small>
+
+                        </div>
+
+
+                        <div class="d-flex gap-2 mt-4">
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-stars me-1"></i>
+                                Analyze Symptoms
+                            </button>
+
+                            <a href="{% url 'symptom_checker' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>
+                                Clear
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    {% if input_warning %}
+    <div class="alert alert-warning border-0 mt-3">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        Please describe your symptoms in more detail, for example:
+        what you are experiencing, how long you have had it, and any
+        associated symptoms.
+    </div>
+    {% endif %}
+
+    {% if emergency_warning %}
+    <div class="alert alert-danger border-0 shadow-sm mt-4">
+        <div class="d-flex align-items-start">
+            <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
+
+            <div>
+                <h5 class="fw-bold mb-2">
+                    Emergency Warning
+                </h5>
+
+                <p class="mb-0">
+                    {{ emergency_message }}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Recommendation -->
+
+    {% if recommended_specialization %}
+
+    <div class="row justify-content-center mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 text-center">
+
+                    <i class="bi bi-heart-pulse text-primary fs-1"></i>
+
+                    <h4 class="fw-bold mt-3 mb-2">
+                        Suggested Specialization
+                    </h4>
+
+                    <p class="text-muted mb-2">
+                        Based on the symptoms you entered, AyuSetu suggests:
+                    </p>
+
+                    <h3 class="text-primary fw-bold mb-3">
+                        {{ recommended_specialization }}
+                    </h3>
+
+                    {% if confidence_level %}
+
+                    <div class="mb-3">
+
+                        <small class="text-muted">
+                            Recommendation confidence:
+                        </small>
+
+                        {% if confidence_level == 'High' %}
+
+                        <span class="badge bg-success">
+                            High
+                        </span>
+
+                        {% elif confidence_level == 'Moderate' %}
+
+                        <span class="badge bg-warning text-dark">
+                            Moderate
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary">
+                            Low
+                        </span>
+
+                        {% endif %}
+
+                        <small class="text-muted ms-2">
+                            ({{ recommendation_score }}% model confidence)
+                        </small>
+
+                    </div>
+
+                    {% endif %}
+                    {% if low_confidence_warning %}
+                    <div class="alert alert-warning border-0 mt-3">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+
+                            <div>
+                                <strong>Low-confidence recommendation</strong>
+
+                                <p class="mb-0 mt-1">
+                                    The AI is not sufficiently confident about this
+                                    specialization. Consider discussing your symptoms
+                                    with a qualified healthcare professional.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    {% if guidance %}
+
+    <div class="row justify-content-center mt-4">
+
+        <div class="col-lg-10">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-4">
+                        General Guidance
+                    </h4>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+
+                            <h5 class="fw-semibold text-success">
+                                <i class="bi bi-check-circle me-2"></i>
+                                What You Can Do
+                            </h5>
+
+                            <ul class="text-muted">
+                                {% for item in guidance.do %}
+                                <li class="mb-2">
+                                    {{ item }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <h5 class="fw-semibold text-danger">
+                                <i class="bi bi-x-circle me-2"></i>
+                                What To Avoid
+                            </h5>
+
+                            <ul class="text-muted">
+                                {% for item in guidance.avoid %}
+                                <li class="mb-2">
+                                    {{ item }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    <div class="alert alert-warning border-0 mt-3 mb-0">
+
+                        <strong>
+                            When to seek medical care:
+                        </strong>
+
+                        <span>
+                            {{ guidance.seek }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    {% if recommended_doctors %}
+
+    <div class="row justify-content-center mt-4">
+
+        <div class="col-lg-10">
+
+            <h4 class="fw-bold mb-3 text-center">
+                Approved Doctors
+            </h4>
+
+            <div class="row g-4">
+
+                {% for doctor in recommended_doctors %}
+
+                <div class="col-md-6">
+
+                    <div class="card border-0 shadow-sm h-100">
+
+                        <div class="card-body p-4">
+
+                            <h5 class="fw-bold">
+                                Dr. {{ doctor.user.get_full_name|default:doctor.user.username }}
+                            </h5>
+
+                            <p class="text-primary fw-semibold mb-2">
+                                {{ doctor.specialization.name }}
+                            </p>
+
+                            <p class="text-muted mb-1">
+                                <strong>Experience:</strong>
+                                {{ doctor.experience }} years
+                            </p>
+
+                            
+                            <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-outline-primary">
+                                View Profile
+                            </a>
+
+                            <a href="{% url 'book_appointment' doctor.id %}" class="btn btn-primary">
+                                Book Appointment
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+    {% endif %}
+
+
+    {% if symptoms and not recommended_specialization %}
+
+    <div class="row justify-content-center mt-5">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4 text-center">
+
+                    <i class="bi bi-search text-warning fs-1"></i>
+
+                    <h4 class="fw-bold mt-3">
+                        No Clear Specialization Found
+                    </h4>
+
+                    <p class="text-muted mb-3">
+                        We could not identify a clear medical specialization
+                        from the symptoms you entered.
+                    </p>
+
+                    <p class="small text-muted mb-0">
+                        Try describing your symptoms in more detail,
+                        or consult a qualified healthcare professional.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- Disclaimer -->
+
+    <div class="row justify-content-center mt-4">
+
+        <div class="col-lg-8">
+
+            <div class="alert alert-warning">
+
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+
+                <strong>Important:</strong>
+
+                This tool provides a preliminary specialization suggestion
+                based on the symptoms entered. It is not a medical diagnosis
+                and should not replace professional medical advice.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

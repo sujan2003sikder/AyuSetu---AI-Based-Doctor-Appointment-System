@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Appointment Details - AyuSetu
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="container">
+
+        <a
+            href="{% url 'patient_appointments' %}"
+            class="text-decoration-none"
+        >
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to My Appointments
+        </a>
+
+
+        <div class="row justify-content-center mt-4">
+
+            <div class="col-lg-8">
+
+                <div class="card border-0 shadow-sm">
+
+                    <div class="card-body p-4 p-md-5">
+
+                        <div class="text-center mb-4">
+
+                            <div
+                                class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                style="width: 80px; height: 80px;"
+                            >
+                                <i
+                                    class="bi bi-calendar-check text-primary"
+                                    style="font-size: 40px;"
+                                ></i>
+                            </div>
+
+                            <h2 class="fw-bold mt-3">
+                                Appointment Details
+                            </h2>
+
+                            <p class="text-muted">
+                                Your appointment information
+                            </p>
+
+                        </div>
+
+
+                        <div class="text-center mb-4">
+
+                            {% if appointment.status == 'pending' %}
+
+                                <span class="badge bg-warning text-dark fs-6 px-3 py-2">
+                                    <i class="bi bi-clock me-1"></i>
+                                    Pending
+                                </span>
+
+                            {% elif appointment.status == 'confirmed' %}
+
+                                <span class="badge bg-success fs-6 px-3 py-2">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Confirmed
+                                </span>
+
+                            {% elif appointment.status == 'completed' %}
+
+                                <span class="badge bg-primary fs-6 px-3 py-2">
+                                    <i class="bi bi-check2-all me-1"></i>
+                                    Completed
+                                </span>
+
+                            {% elif appointment.status == 'rejected' %}
+
+                                <span class="badge bg-danger fs-6 px-3 py-2">
+                                    <i class="bi bi-x-circle me-1"></i>
+                                    Rejected
+                                </span>
+
+                            {% elif appointment.status == 'cancelled' %}
+
+                                <span class="badge bg-secondary fs-6 px-3 py-2">
+                                    <i class="bi bi-slash-circle me-1"></i>
+                                    Cancelled
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="border rounded-3 p-4 mb-4">
+
+                            <h5 class="fw-bold mb-3">
+                                <i class="bi bi-person-badge text-primary me-2"></i>
+                                Doctor Information
+                            </h5>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+
+                                    <small class="text-muted">
+                                        Doctor
+                                    </small>
+
+                                    <div class="fw-semibold">
+                                        Dr.
+                                        {{ appointment.doctor.user.get_full_name|default:appointment.doctor.user.username }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <small class="text-muted">
+                                        Specialization
+                                    </small>
+
+                                    <div class="fw-semibold">
+                                        {{ appointment.doctor.specialization.name }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <small class="text-muted">
+                                        Qualification
+                                    </small>
+
+                                    <div class="fw-semibold">
+                                        {{ appointment.doctor.qualification }}
+                                    </div>
+
+                                </div>
+
+
+                                
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="border rounded-3 p-4 mb-4">
+
+                            <h5 class="fw-bold mb-3">
+                                <i class="bi bi-calendar-event text-primary me-2"></i>
+                                Appointment Information
+                            </h5>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+
+                                    <small class="text-muted">
+                                        Date
+                                    </small>
+
+                                    <div class="fw-semibold">
+                                        {{ appointment.appointment_date|date:"d F Y" }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-6">
+
+                                    <small class="text-muted">
+                                        Time
+                                    </small>
+
+                                    <div class="fw-semibold">
+                                        {{ appointment.appointment_time|time:"h:i A" }}
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <small class="text-muted">
+                                        Reason for Consultation
+                                    </small>
+
+                                    <div class="fw-semibold">
+
+                                        {% if appointment.reason %}
+
+                                            {{ appointment.reason }}
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+                                                No reason provided
+                                            </span>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        {% if appointment.doctor.clinic_name or appointment.doctor.clinic_address %}
+
+                            <div class="border rounded-3 p-4 mb-4">
+
+                                <h5 class="fw-bold mb-3">
+                                    <i class="bi bi-hospital text-primary me-2"></i>
+                                    Clinic Information
+                                </h5>
+
+
+                                {% if appointment.doctor.clinic_name %}
+
+                                    <p class="mb-2">
+
+                                        <i class="bi bi-building text-primary me-2"></i>
+
+                                        <strong>
+                                            {{ appointment.doctor.clinic_name }}
+                                        </strong>
+
+                                    </p>
+
+                                {% endif %}
+
+
+                                {% if appointment.doctor.clinic_address %}
+
+                                    <p class="text-muted mb-0">
+
+                                        <i class="bi bi-geo-alt text-primary me-2"></i>
+
+                                        {{ appointment.doctor.clinic_address }}
+
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="d-flex gap-2">
+
+                            <a
+                                href="{% url 'patient_appointments' %}"
+                                class="btn btn-outline-secondary w-50"
+                            >
+                                <i class="bi bi-arrow-left me-1"></i>
+                                Back
+                            </a>
+
+
+                            {% if appointment.status == 'pending' or appointment.status == 'confirmed' %}
+
+                                <form
+                                    method="post"
+                                    action="{% url 'cancel_appointment' appointment.id %}"
+                                    class="w-50"
+                                >
+
+                                    {% csrf_token %}
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-outline-danger w-100"
+                                        onclick="return confirm('Are you sure you want to cancel this appointment?');"
+                                    >
+                                        <i class="bi bi-x-circle me-1"></i>
+                                        Cancel Appointment
+                                    </button>
+
+                                </form>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

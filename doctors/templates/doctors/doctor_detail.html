@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dr. {{ doctor }} - AyuSetu
+{% endblock %}
+
+{% block content %}
+
+<section class="py-5">
+
+    <div class="container">
+
+        <a href="{% url 'doctor_list' %}" class="text-decoration-none">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Doctors
+        </a>
+
+        <div class="card border-0 shadow-sm mt-4">
+
+            <div class="card-body p-4 p-lg-5">
+
+                <div class="row g-5 align-items-center">
+
+                    <div class="col-lg-4 text-center">
+
+                        {% if doctor.profile_image %}
+
+                            <img
+                                src="{{ doctor.profile_image.url }}"
+                                alt="Dr. {{ doctor }}"
+                                class="img-fluid rounded-4 shadow-sm"
+                                style="max-height: 350px; width: 100%; object-fit: cover;"
+                            >
+
+                        {% else %}
+
+                            <div class="bg-light rounded-4 py-5">
+
+                                <i
+                                    class="bi bi-person-circle text-secondary"
+                                    style="font-size: 140px;"
+                                ></i>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="col-lg-8">
+
+                        <span class="badge bg-success mb-3">
+                            <i class="bi bi-patch-check-fill me-1"></i>
+                            Verified Doctor
+                        </span>
+
+                        <h1 class="fw-bold">
+                            Dr. {{ doctor }}
+                        </h1>
+
+                        <h4 class="text-primary mb-4">
+                            {{ doctor.specialization.name }}
+                        </h4>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+
+                                <div class="bg-light rounded-3 p-3 h-100">
+
+                                    <small class="text-muted">
+                                        <i class="bi bi-mortarboard me-1"></i>
+                                        Qualification
+                                    </small>
+
+                                    <div class="fw-semibold mt-1">
+                                        {{ doctor.qualification }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="bg-light rounded-3 p-3 h-100">
+
+                                    <small class="text-muted">
+                                        <i class="bi bi-briefcase me-1"></i>
+                                        Experience
+                                    </small>
+
+                                    <div class="fw-semibold mt-1">
+                                        {{ doctor.experience }} years
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="bg-light rounded-3 p-3 h-100">
+
+                                    <small class="text-muted">
+                                        <i class="bi bi-card-text me-1"></i>
+                                        Registration Number
+                                    </small>
+
+                                    <div class="fw-semibold mt-1">
+                                        {{ doctor.registration_number }}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        {% if doctor.bio %}
+
+                            <div class="mt-4">
+
+                                <h4 class="fw-bold">
+                                    About the Doctor
+                                </h4>
+
+                                <p class="text-muted mb-0">
+                                    {{ doctor.bio }}
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+                        {% if doctor.clinic_name or doctor.clinic_address %}
+
+                            <div class="mt-4">
+
+                                <h4 class="fw-bold">
+                                    Clinic Information
+                                </h4>
+
+                                {% if doctor.clinic_name %}
+
+                                    <p class="mb-2">
+
+                                        <i class="bi bi-hospital text-primary me-2"></i>
+
+                                        <strong>
+                                            {{ doctor.clinic_name }}
+                                        </strong>
+
+                                    </p>
+
+                                {% endif %}
+
+                                {% if doctor.clinic_address %}
+
+                                    <p class="text-muted mb-0">
+
+                                        <i class="bi bi-geo-alt text-primary me-2"></i>
+
+                                        {{ doctor.clinic_address }}
+
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+                        <div class="mt-4">
+
+                            {% if user.is_authenticated %}
+
+                                {% if user.role == 'patient' %}
+
+                                    <a
+                                        href="{% url 'book_appointment' doctor.id %}"
+                                        class="btn btn-primary btn-lg"
+                                    >
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        Book Appointment
+                                    </a>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <a
+                                    href="{% url 'login' %}?next={% url 'book_appointment' doctor.id %}"
+                                    class="btn btn-primary btn-lg"
+                                >
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>
+                                    Login to Book
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

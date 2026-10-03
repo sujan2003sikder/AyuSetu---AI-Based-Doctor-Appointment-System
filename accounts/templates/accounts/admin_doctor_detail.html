@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Details | AyuSetu{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                Doctor Details
+            </h1>
+
+            <p class="text-muted mb-0">
+                Review complete doctor registration information.
+            </p>
+        </div>
+
+        <a href="{% url 'admin_doctor_verification' %}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Doctors
+        </a>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body p-4">
+
+            <div class="row">
+
+                <div class="col-md-4 text-center mb-4 mb-md-0">
+
+                    {% if doctor.profile_image %}
+
+                    <img src="{{ doctor.profile_image.url }}" alt="Dr. {{ doctor.user.get_full_name }}"
+                        class="img-fluid rounded-circle shadow-sm"
+                        style="width: 180px; height: 180px; object-fit: cover;">
+
+                    {% else %}
+
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center mx-auto"
+                        style="width: 180px; height: 180px;">
+                        <i class="bi bi-person-badge fs-1 text-primary"></i>
+                    </div>
+
+                    {% endif %}
+
+                    <h3 class="fw-bold mt-3">
+                        Dr.
+                        {% if doctor.user.get_full_name %}
+                        {{ doctor.user.get_full_name }}
+                        {% else %}
+                        {{ doctor.user.username }}
+                        {% endif %}
+                    </h3>
+
+                    <p class="text-muted mb-2">
+                        {{ doctor.specialization.name }}
+                    </p>
+
+                    {% if doctor.verification_status == 'pending' %}
+
+                    <span class="badge bg-warning text-dark fs-6">
+                        Pending Verification
+                    </span>
+
+                    {% elif doctor.verification_status == 'approved' %}
+
+                    <span class="badge bg-success fs-6">
+                        Approved
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-danger fs-6">
+                        Rejected
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+                <div class="col-md-8">
+
+                    <h4 class="fw-bold mb-3">
+                        Professional Information
+                    </h4>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <strong>
+                                Registration Number
+                            </strong>
+
+                            <p class="text-muted mb-0">
+                                {{ doctor.registration_number }}
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <strong>
+                                Qualification
+                            </strong>
+
+                            <p class="text-muted mb-0">
+                                {{ doctor.qualification }}
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <strong>
+                                Specialization
+                            </strong>
+
+                            <p class="text-muted mb-0">
+                                {{ doctor.specialization.name }}
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <strong>
+                                Experience
+                            </strong>
+
+                            <p class="text-muted mb-0">
+                                {{ doctor.experience }} years
+                            </p>
+
+                        </div>
+
+                        
+
+                        <div class="col-md-6">
+
+                            <strong>
+                                Clinic Name
+                            </strong>
+
+                            <p class="text-muted mb-0">
+                                {{ doctor.clinic_name|default:"Not provided" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h4 class="fw-bold mb-3">
+                        Contact Information
+                    </h4>
+
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+
+                            <strong>
+                                Email
+                            </strong>
+
+                            <p class="text-muted mb-0">
+                                {{ doctor.user.email }}
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <strong>
+                                Phone
+                            </strong>
+
+                            <p class="text-muted mb-0">
+                                {{ doctor.user.phone|default:"Not provided" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h4 class="fw-bold mb-3">
+                        Clinic Address
+                    </h4>
+
+                    <p class="text-muted">
+                        {{ doctor.clinic_address|default:"Not provided" }}
+                    </p>
+
+                    <h4 class="fw-bold mb-3 mt-4">
+                        Professional Bio
+                    </h4>
+
+                    <p class="text-muted">
+                        {{ doctor.bio|default:"No professional bio provided." }}
+                    </p>
+                    <hr class="my-4">
+
+                    <h4 class="fw-bold mb-3">
+                        <i class="bi bi-calendar-week me-1"></i>
+                        Doctor Availability
+                    </h4>
+
+                    {% if availabilities %}
+
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered align-middle">
+
+                            <thead class="table-light">
+
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Status</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for availability in availabilities %}
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            {{ availability.get_day_display }}
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        {{ availability.start_time|time:"h:i A" }}
+                                    </td>
+
+                                    <td>
+                                        {{ availability.end_time|time:"h:i A" }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if availability.is_active %}
+
+                                        <span class="badge bg-success">
+                                            Active
+                                        </span>
+
+                                        {% else %}
+
+                                        <span class="badge bg-secondary">
+                                            Inactive
+                                        </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="alert alert-light border">
+
+                        <i class="bi bi-calendar-x me-1"></i>
+
+                        This doctor has not added any availability yet.
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

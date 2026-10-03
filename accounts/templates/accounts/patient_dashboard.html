@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Dashboard | AyuSetu{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-5">
+
+        <h2 class="fw-bold">
+            Welcome, {{ request.user.first_name|default:request.user.username }}
+        </h2>
+
+        <p class="text-muted mb-0">
+            Manage your appointments and healthcare activities from here.
+        </p>
+
+    </div>
+
+
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Total Appointments
+                            </p>
+
+                            <h3 class="fw-bold mb-0">
+                                {{ total_count }}
+                            </h3>
+
+                        </div>
+
+                        <i class="bi bi-calendar2-check text-primary fs-1"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Pending
+                            </p>
+
+                            <h3 class="fw-bold mb-0">
+                                {{ pending_count }}
+                            </h3>
+
+                        </div>
+
+                        <i class="bi bi-hourglass-split text-warning fs-1"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Confirmed
+                            </p>
+
+                            <h3 class="fw-bold mb-0">
+                                {{ confirmed_count }}
+                            </h3>
+
+                        </div>
+
+                        <i class="bi bi-check-circle text-success fs-1"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+
+                            <p class="text-muted mb-1">
+                                Completed
+                            </p>
+
+                            <h3 class="fw-bold mb-0">
+                                {{ completed_count }}
+                            </h3>
+
+                        </div>
+
+                        <i class="bi bi-clipboard2-check text-info fs-1"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="row g-4">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+
+                        <div>
+
+                            <h4 class="fw-bold mb-1">
+                                Upcoming Appointments
+                            </h4>
+
+                            <p class="text-muted mb-0">
+                                Your next scheduled appointments
+                            </p>
+
+                        </div>
+
+                        <a
+                            href="{% url 'patient_appointments' %}"
+                            class="btn btn-outline-primary btn-sm"
+                        >
+                            View All
+                        </a>
+
+                    </div>
+
+
+                    {% if upcoming_appointments %}
+
+                    <div class="table-responsive">
+
+                        <table class="table align-middle">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Doctor</th>
+
+                                    <th>Specialization</th>
+
+                                    <th>Date</th>
+
+                                    <th>Time</th>
+
+                                    <th>Status</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                {% for appointment in upcoming_appointments %}
+
+                                <tr>
+
+                                    <td>
+
+                                        <a
+                                            href="{% url 'doctor_detail' appointment.doctor.id %}"
+                                            class="text-decoration-none fw-semibold"
+                                        >
+                                            Dr.
+                                            {{ appointment.doctor.user.get_full_name|default:appointment.doctor.user.username }}
+                                        </a>
+
+                                    </td>
+
+                                    <td>
+                                        {{ appointment.doctor.specialization.name }}
+                                    </td>
+
+                                    <td>
+                                        {{ appointment.appointment_date|date:"d M Y" }}
+                                    </td>
+
+                                    <td>
+                                        {{ appointment.appointment_time|time:"h:i A" }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if appointment.status == 'pending' %}
+
+                                        <span class="badge bg-warning text-dark">
+                                            Pending
+                                        </span>
+
+                                        {% elif appointment.status == 'confirmed' %}
+
+                                        <span class="badge bg-success">
+                                            Confirmed
+                                        </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="text-center py-5">
+
+                        <i class="bi bi-calendar-x text-muted fs-1"></i>
+
+                        <h5 class="fw-bold mt-3">
+                            No Upcoming Appointments
+                        </h5>
+
+                        <p class="text-muted">
+                            You don't have any upcoming appointments.
+                        </p>
+
+                        <a
+                            href="{% url 'doctor_list' %}"
+                            class="btn btn-primary"
+                        >
+                            <i class="bi bi-search me-1"></i>
+                            Find a Doctor
+                        </a>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-4">
+
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-3">
+                        Quick Actions
+                    </h5>
+
+                    <div class="d-grid gap-2">
+
+                        <a
+                            href="{% url 'doctor_list' %}"
+                            class="btn btn-primary"
+                        >
+                            <i class="bi bi-search me-2"></i>
+                            Find a Doctor
+                        </a>
+
+                        <a
+                            href="{% url 'patient_appointments' %}"
+                            class="btn btn-outline-primary"
+                        >
+                            <i class="bi bi-calendar-check me-2"></i>
+                            My Appointments
+                        </a>
+
+                        <a
+                            href="{% url 'patient_profile' %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            <i class="bi bi-person me-2"></i>
+                            My Profile
+                        </a>
+
+                        <a
+                            href="{% url 'specialization_list' %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            <i class="bi bi-grid me-2"></i>
+                            Browse Specializations
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-3">
+                        Need Help?
+                    </h5>
+
+                    <p class="text-muted small">
+                        If you are unsure which specialist to consult,
+                        you can explore our medical specializations
+                        or use the AyuSetu AI Symptom Checker.
+                    </p>
+
+                    <a
+                        href="{% url 'symptom_checker' %}"
+                        class="btn btn-outline-primary w-100"
+                    >
+                        <i class="bi bi-stars me-2"></i>
+                        AI Symptom Checker
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

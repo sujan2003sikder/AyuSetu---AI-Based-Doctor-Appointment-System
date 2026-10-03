@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}Specialization Management | AyuSetu{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="fw-bold mb-1">
+                Specialization Management
+            </h1>
+
+            <p class="text-muted mb-0">
+                View and manage medical specializations.
+            </p>
+        </div>
+
+        <a
+            href="{% url 'admin_dashboard' %}"
+            class="btn btn-outline-primary"
+        >
+            <i class="bi bi-arrow-left me-1"></i>
+            Admin Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- Search -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form
+                method="get"
+                action="{% url 'admin_specialization_management' %}"
+            >
+
+                <div class="row g-2">
+
+                    <div class="col-md-9">
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+                                <i class="bi bi-search"></i>
+                            </span>
+
+                            <input
+                                type="text"
+                                name="search"
+                                class="form-control"
+                                placeholder="Search specialization..."
+                                value="{{ search_query }}"
+                            >
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+                            <i class="bi bi-search me-1"></i>
+                            Search
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                {% if search_query %}
+
+                <div class="mt-3">
+
+                    <span class="text-muted">
+                        Search results for:
+                    </span>
+
+                    <strong>
+                        "{{ search_query }}"
+                    </strong>
+
+                    <a
+                        href="{% url 'admin_specialization_management' %}"
+                        class="btn btn-sm btn-outline-secondary ms-2"
+                    >
+                        Clear Search
+                    </a>
+
+                </div>
+
+                {% endif %}
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Specializations -->
+
+    {% if specializations %}
+
+    <div class="row g-4">
+
+        {% for specialization in specializations %}
+
+        <div class="col-md-6 col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+
+                        <div
+                            class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center"
+                            style="width: 60px; height: 60px;"
+                        >
+                            <i
+                                class="{{ specialization.icon|default:'bi bi-hospital' }} fs-3 text-primary"
+                            ></i>
+                        </div>
+
+                        {% if specialization.is_active %}
+
+                        <span class="badge bg-success">
+                            Active
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-secondary">
+                            Inactive
+                        </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <h4 class="fw-bold">
+                        {{ specialization.name }}
+                    </h4>
+
+
+                    <p class="text-muted">
+                        {{ specialization.description|default:"No description available." }}
+                    </p>
+
+
+                    <hr>
+
+
+                    <div class="d-flex justify-content-between">
+
+                        <span class="text-muted">
+
+                            <i class="bi bi-person-badge me-1"></i>
+
+                            Doctors
+
+                        </span>
+
+                        <strong>
+                            {{ specialization.doctors.count }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    {% else %}
+
+
+    <!-- Empty State -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body text-center py-5">
+
+            <i class="bi bi-hospital fs-1 text-muted"></i>
+
+            <h4 class="mt-3">
+                No specializations found
+            </h4>
+
+            {% if search_query %}
+
+            <p class="text-muted">
+                No specialization matched
+                "<strong>{{ search_query }}</strong>".
+            </p>
+
+            <a
+                href="{% url 'admin_specialization_management' %}"
+                class="btn btn-outline-primary"
+            >
+                <i class="bi bi-arrow-left me-1"></i>
+                View All Specializations
+            </a>
+
+            {% else %}
+
+            <p class="text-muted mb-0">
+                Add specializations from the Django Admin panel.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Django
+*.log
+
+# SQLite database
+db.sqlite3
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Media uploads
+media/
+
+# ML generated files
+*.pkl
+*.joblib
+
+!ml_model/saved_model/ayusetu_symptom_specialization_model_v5.pkl
+
+# Python distribution
+build/
+dist/
+*.egg-info/
